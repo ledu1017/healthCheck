@@ -13,5 +13,7 @@ public class Category {
 	float ast;    // (혈청지오티)AST
 	float alt;    // (혈청지오티)ALT
 	float gtp;    // 감마지티피
-	float date;     // 날짜
+	String date;     // 날짜
+	String id;
+	String name;
 }

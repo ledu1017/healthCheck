@@ -21,18 +21,20 @@ import java.util.StringTokenizer;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.SystemColor;
+import javax.swing.JPasswordField;
 
 public class LoginProgram extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
 	private JTextField idInput;
-	private JTextField pwInput;
+	private JPasswordField pwInput;
 	JLabel loginFail = new JLabel("");
 	JButton loginButton = new JButton("로그인");
 	JButton signIn = new JButton("회원가입");
 	
 	Mysql sql = new Mysql();
 	String name;
+	String id;
 	
 	public LoginProgram() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,12 +66,6 @@ public class LoginProgram extends JFrame implements ActionListener{
 		pwText.setBounds(123, 185, 50, 15);
 		contentPane.add(pwText);
 		
-		pwInput = new JTextField();    // 비밀번호 입력
-		pwInput.setColumns(10);
-		pwInput.setBackground(Color.LIGHT_GRAY);
-		pwInput.setBounds(203, 178, 217, 30);
-		contentPane.add(pwInput);
-		
 		loginButton.setBounds(446, 178, 91, 30);    // 로그인 버튼
 		loginButton.addActionListener(this);
 		contentPane.add(loginButton);
@@ -85,21 +81,22 @@ public class LoginProgram extends JFrame implements ActionListener{
 		searchId.setBounds(203, 235, 91, 23);
 		contentPane.add(searchId);
 		
+		pwInput = new JPasswordField();
+		pwInput.setBackground(new Color(192, 192, 192));
+		pwInput.setBounds(203, 173, 217, 30);
+		contentPane.add(pwInput);
+		
 	}
 	
-	int loginCheck() {	
+	int loginCheck() {
 		String uid = idInput.getText();    // 사용자가 입력한 아이디
 		String upass = pwInput.getText();    // 사용자가 입력한 비밀번호
 		String idpwCheck = "Fail";
 		String selectPass = "SELECT password FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 비밀번호가 있는지 확인
 		String selectName = "SELECT name FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 이름이 있는지 확인
+		this.id = uid;
 		
-		try {
-			sql.con = DriverManager.getConnection(sql.url, sql.user, sql.passwd);    // MySQL 접속
-			sql.stmt = sql.con.createStatement();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+		sql.connectMysql();
 		
 		try {
 			ResultSet rs = sql.stmt.executeQuery(selectPass);    // 사용자가 입력한 아이디에 해당하는 비밀번호 찾기
@@ -133,14 +130,14 @@ public class LoginProgram extends JFrame implements ActionListener{
 		
 		if(e.getSource() == loginButton) {
 			if(loginCheck() == 1) {    // 로그인 버튼을 눌렀을 때 로그인 성공시
-				MainProgram mp = new MainProgram(name);
+				MainProgram mp = new MainProgram(name, id);
 				mp.setVisible(true);    // MainFrame 실행
 				dispose();    // loginProgram 화면 안보이게
 			}
 		}
 		else if(e.getSource() == signIn) {    // 회원가입 버튼을 눌렀을때
-			//signProgram.setVisible(true);    // signProgram 실행
-			//dispose();    // loginFrame 화면 안보이게
+			signProgram.setVisible(true);    // signProgram 실행
+			dispose();    // loginFrame 화면 안보이게
 		}
 	}
 }
