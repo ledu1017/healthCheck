@@ -31,6 +31,7 @@ public class LoginProgram extends JFrame implements ActionListener{
 	JLabel loginFail = new JLabel("");
 	JButton loginButton = new JButton("로그인");
 	JButton signIn = new JButton("회원가입");
+	JButton searchId = new JButton("계정찾기");
 	
 	Mysql sql = new Mysql();
 	String name;
@@ -77,8 +78,8 @@ public class LoginProgram extends JFrame implements ActionListener{
 		signIn.addActionListener(this);
 		contentPane.add(signIn);
 		
-		JButton searchId = new JButton("계정찾기");
 		searchId.setBounds(203, 235, 91, 23);
+		searchId.addActionListener(this);
 		contentPane.add(searchId);
 		
 		pwInput = new JPasswordField();
@@ -92,8 +93,8 @@ public class LoginProgram extends JFrame implements ActionListener{
 		String uid = idInput.getText();    // 사용자가 입력한 아이디
 		String upass = pwInput.getText();    // 사용자가 입력한 비밀번호
 		String idpwCheck = "Fail";
-		String selectPass = "SELECT password FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 비밀번호가 있는지 확인
-		String selectName = "SELECT name FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 이름이 있는지 확인
+		String selectPass = "SELECT password FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 비밀번호가 있는지 확인 sql문
+		String selectName = "SELECT name FROM signData WHERE id='" + uid + "'";    // 사용자가 입력한 아이디에 맞는 이름이 있는지 확인 sql문
 		this.id = uid;
 		
 		sql.connectMysql();
@@ -102,7 +103,7 @@ public class LoginProgram extends JFrame implements ActionListener{
 			ResultSet rs = sql.stmt.executeQuery(selectPass);    // 사용자가 입력한 아이디에 해당하는 비밀번호 찾기
 			rs.next();
 			String str = rs.getString("password");
-			rs = sql.stmt.executeQuery(selectName);
+			rs = sql.stmt.executeQuery(selectName);    // 사용자가 입력한 아이디에 해당하는 이름 찾기
 			rs.next();
 			name = rs.getString("name");
 			
@@ -127,17 +128,22 @@ public class LoginProgram extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		LoginProgram login = new LoginProgram();
 		SignInProgram signProgram = new SignInProgram();
+		SearchIdProgram searchIdProgram = new SearchIdProgram();
 		
 		if(e.getSource() == loginButton) {
 			if(loginCheck() == 1) {    // 로그인 버튼을 눌렀을 때 로그인 성공시
-				MainProgram mp = new MainProgram(name, id);
-				mp.setVisible(true);    // MainFrame 실행
-				dispose();    // loginProgram 화면 안보이게
+				MainProgram mp = new MainProgram(name, id);    //MainProgram 실행
+				mp.setVisible(true);    // MainProgram 보이게 
+				dispose();    // LoginProgram 종료
 			}
 		}
 		else if(e.getSource() == signIn) {    // 회원가입 버튼을 눌렀을때
 			signProgram.setVisible(true);    // signProgram 실행
-			dispose();    // loginFrame 화면 안보이게
+			dispose();    // LoginProgram 종료
+		}
+		else if(e.getSource() == searchId) {
+			searchIdProgram.setVisible(true);
+			dispose();
 		}
 	}
 }

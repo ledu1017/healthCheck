@@ -28,7 +28,7 @@ public class MainProgram extends JFrame implements ActionListener{
 
 	ArrayList<String> healthComment = new ArrayList<>();
 	
-	userData udt = new userData();
+	userData udt = new userData();    // userdata 테이블에 있는 데이터 읽기위함
 	Mysql sql = new Mysql();
 	File dataFile = new File("healthComment.txt");
 	
@@ -44,7 +44,7 @@ public class MainProgram extends JFrame implements ActionListener{
 		int count = 0;
 		this.name = name;
 		this.id = id;
-		udt.userInformation(id);
+		udt.userInformation(id);    // 사용자가 입력한 아이디에 맞는 데이터 읽기위해 id 보내기
 		Random random = new Random();
 		
 		try {    // 오늘의 건강정보 추천사항에 들어갈 문장 갯수 읽어와서 랜덤으로 걸린 문장 출력하기 위함
@@ -112,6 +112,11 @@ public class MainProgram extends JFrame implements ActionListener{
 		logOut.setFont(new Font("굴림", Font.BOLD, 17));
 		logOut.setBounds(193, 434, 111, 55);
 		westPanel.add(logOut);
+		
+		JPanel rankGraph = new JPanel();
+		rankGraph.setBackground(Color.WHITE);
+		rankGraph.setBounds(12, 103, 312, 310);
+		westPanel.add(rankGraph);
 
 		JPanel eastPanel = new JPanel();
 		eastPanel.setBackground(Color.WHITE);
@@ -151,19 +156,22 @@ public class MainProgram extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		LoginProgram login = new LoginProgram();
 		MyHealthInformation myHealthInformation = new MyHealthInformation(name, id);
+		NearbySearch nearbySearch = new NearbySearch(name, id);
 		
 		if(e.getSource() == exit) {
 			System.exit(0);
 		}
-		else if(e.getSource() == logOut) {
-			udt.userData.clear();    // userData 배열에 있던 값 초기화
+		else if(e.getSource() == logOut) {    // 로그아웃을 통해 로그인 화면으로 돌아가기 
 			login.setVisible(true);
 			dispose();
 		}
-		else if(e.getSource() == userHealthButton) {
+		else if(e.getSource() == userHealthButton) {    // 개인 건강정보 페이지
 			myHealthInformation.setVisible(true);
 			dispose();
 		}
-		
+		else if(e.getSource() == nearbySearchButton) {
+			nearbySearch.setVisible(true);
+			dispose();
+		}
 	}
 }

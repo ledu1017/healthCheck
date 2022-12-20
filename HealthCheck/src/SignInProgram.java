@@ -16,6 +16,7 @@ import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import java.awt.SystemColor;
 
 public class SignInProgram extends JFrame implements ActionListener {
 
@@ -23,6 +24,7 @@ public class SignInProgram extends JFrame implements ActionListener {
 	private JTextField newIdInput;
 	private JTextField newPwInput;
 	JButton ok = new JButton("확인");
+	JButton gotologinFrame = new JButton("로그인 \r\n페이지로 이동");
 	private JLabel signInFail;
 
 	Mysql sql = new Mysql();
@@ -30,12 +32,10 @@ public class SignInProgram extends JFrame implements ActionListener {
 	private JTextField newPhNumInput;
 
 	public SignInProgram() {
-		LoginProgram lf = new LoginProgram();
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 620, 393);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(SystemColor.activeCaption);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -51,13 +51,13 @@ public class SignInProgram extends JFrame implements ActionListener {
 		contentPane.add(newPasswd);
 
 		newIdInput = new JTextField();    // 사용자가 입력한 새로운 아이디
-		newIdInput.setBackground(Color.LIGHT_GRAY);
+		newIdInput.setBackground(Color.WHITE);
 		newIdInput.setBounds(203, 74, 217, 30);
 		contentPane.add(newIdInput);
 		newIdInput.setColumns(10);
 
 		newPwInput = new JTextField();    // 사용자가 입력한 새로운 비밀번호
-		newPwInput.setBackground(Color.LIGHT_GRAY);
+		newPwInput.setBackground(Color.WHITE);
 		newPwInput.setBounds(203, 121, 217, 30);
 		contentPane.add(newPwInput);
 		newPwInput.setColumns(10);
@@ -75,14 +75,7 @@ public class SignInProgram extends JFrame implements ActionListener {
 		signInFail.setHorizontalAlignment(SwingConstants.CENTER);
 		signInFail.setBounds(193, 259, 253, 23);
 		contentPane.add(signInFail);
-
-		JButton gotologinFrame = new JButton("로그인 \r\n페이지로 이동");
-		gotologinFrame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();    // SigninProgram 안보이게
-				lf.setVisible(true);    // loginFrame 보이게
-			}
-		});
+		
 		gotologinFrame.setBounds(229, 287, 161, 59);
 		gotologinFrame.addActionListener(this);
 		contentPane.add(gotologinFrame);
@@ -102,13 +95,13 @@ public class SignInProgram extends JFrame implements ActionListener {
 		
 		newNameInput = new JTextField();
 		newNameInput.setColumns(10);
-		newNameInput.setBackground(Color.LIGHT_GRAY);
+		newNameInput.setBackground(Color.WHITE);
 		newNameInput.setBounds(203, 172, 217, 30);
 		contentPane.add(newNameInput);
 		
 		newPhNumInput = new JTextField();
 		newPhNumInput.setColumns(10);
-		newPhNumInput.setBackground(Color.LIGHT_GRAY);
+		newPhNumInput.setBackground(Color.WHITE);
 		newPhNumInput.setBounds(203, 219, 217, 30);
 		contentPane.add(newPhNumInput);
 		ok.addActionListener(this);
@@ -117,6 +110,7 @@ public class SignInProgram extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		LoginProgram lf = new LoginProgram();
 		String id = newIdInput.getText();    // 사용자가 입력한 아이디
 		String pass = newPwInput.getText();    // 사용자가 입력한 비밀번호
 		String name = newNameInput.getText();
@@ -133,9 +127,9 @@ public class SignInProgram extends JFrame implements ActionListener {
 			ResultSet result = sql.stmt.executeQuery("SELECT * FROM signData");
 			if (e.getSource() == ok) {
 				while (result.next()) {
-					String selectId = result.getString("id");    // user 테이블에 있는 아이디 불러오기
-					String selectPw = result.getString("password");    // user 테이블에 있는 비밀번호 불러오기
-					if (selectId.equals(id) || selectPw.equals(pass)) {    // 만약 사용자가 입력한것과 user테이블에서 불러온게 같다면
+					String selectId = result.getString("id");    // signdata 테이블에 있는 아이디 불러오기
+					String selectPw = result.getString("password");    // signdata 테이블에 있는 비밀번호 불러오기
+					if (selectId.equals(id) || selectPw.equals(pass)) {    // 만약 사용자가 입력한것과 signdata테이블에서 불러온게 같다면
 						sameCheck = 1;    // 입력한 아이디 또는 비밀번호가 이미 존재한다면 1
 						signInFail.setText("이미 존재하는 아이디 또는 비밀번호 입니다.");
 						break;
@@ -147,6 +141,10 @@ public class SignInProgram extends JFrame implements ActionListener {
 					sql.stmt.executeUpdate(commend); 
 					signInFail.setText("회원가입에 성공하였습니다.");
 				}
+			}
+			else if(e.getSource() == gotologinFrame) {
+				dispose();    // SigninProgram 안보이게
+				lf.setVisible(true);    // loginFrame 보이게
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
